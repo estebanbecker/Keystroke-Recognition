@@ -13,30 +13,37 @@ with open('DSL-StrongPasswordData.csv') as csvfile:
     
     for row in reader:
         
-        if subjects.get(row[0]) is None:
-            data={}
-            data['KD']=[]
-            data['DDKL']=[]
-            data['UUKL']=[]
+        if row[0] != "subject":
+            if subjects.get(row[0]) is None:
+                data={}
+                data['KD']=[]
+                data['DDKL']=[]
+                data['UUKL']=[]
 
-            subjects[row[0]] = data
-        
-        subjects[row[0]]['KD'].append(row[3])
-        subjects[row[0]]['DDKL'].append(row[4])
-        subjects[row[0]]['UUKL'].append(row[3]+row[4])
+                subjects[row[0]] = data
+            
+            subjects[row[0]]['KD'].append(row[3])
+            subjects[row[0]]['DDKL'].append(row[4])
+            subjects[row[0]]['UUKL'].append(row[3]+row[4])
 
 train_data={}
 test_data={}
 # Create a list of 80 random different data for each subject
 random_number=random.sample(range(0,400),80)
-for subject in subjects.items():
-    data = {}
-    data['KD']=[]
-    data['DDKL']=[]
-    data['UUKL']=[]
+for subject in subjects:
 
-    train_data[subject]=data
-    test_data[subject]=data
+    data_train = {}
+    data_train['KD']=[]
+    data_train['DDKL']=[]
+    data_train['UUKL']=[]
+
+    data_test = {}
+    data_test['KD']=[]
+    data_test['DDKL']=[]
+    data_test['UUKL']=[]
+
+    train_data[subject]=data_train
+    test_data[subject]=data_test
 
     for i in range(0,400):
         
@@ -50,6 +57,6 @@ for subject in subjects.items():
             train_data[subject]['UUKL'].append(subjects[subject]['UUKL'][i])
 
 GMM=[]
-for subject in train_data.items():
+for subject in train_data:
     GMM.append(GaussianMixture(n_components=3, covariance_type='full').fit((subject[1]['KD'],subject[1]['DDKL'],subject[1]['UUKL'])))
 
